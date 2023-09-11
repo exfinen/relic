@@ -1,0 +1,24 @@
+#!/bin/sh
+cmake \
+    -DSHLIB=on \
+    -DSTLIB=off \
+    -DSTBIN=off \
+    -DWSIZE=64 \
+    -DARCH=A64 \
+    -DBENCH=0 \
+    -DOPSYS=MACOSX \
+    -DRAND=UDEV \
+    -DTIMER=CYCLE \
+    -DCHECK=off \
+    -DVERBS=off \
+    -DARITH=easy \
+    -DFP_PRIME=381 \
+    -DFP_METHD="BASIC;BASIC;BASIC;BASIC;BASIC;BASIC;BASIC" \
+    -DCFLAGS="-O3" \
+    -DFP_PMERS=off \
+    -DFP_QNRES=on \
+    -DFPX_METHD="BASIC;BASIC;BASIC" \
+    -DEP_METHD="BASIC;BASIC;BASIC;BASIC;SWIFT" \
+    -DEP_PLAIN=off \
+    -DEP_SUPER=off \
+    -DPP_METHD="BASIC;WEILP" $1

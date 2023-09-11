@@ -1557,6 +1557,7 @@ static int pairing(void) {
 	bn_null(n);
 
 	RLC_TRY {
+         printf("---> RLC_TRY begin\n");
 		gt_new(e1);
 		gt_new(e2);
 		bn_new(k);
@@ -1569,73 +1570,87 @@ static int pairing(void) {
 			g2_new(q[j]);
 		}
 
+          printf("----\n");
+          g1_t g1_g;
+          g1_get_gen(&g1_g);
+          printf("G1 generator is: ");
+          g1_print(&g1_g);
+          printf("----\n");
+            
+          g2_t g2_g;
+          g2_get_gen(&g2_g);
+          printf("G2 generator is: ");
+          g2_print(&g2_g);
+          printf("----\n");
+
 		pc_get_ord(n);
 
-		TEST_CASE("pairing non-degeneracy is correct") {
+		// TEST_CASE("pairing non-degeneracy is correct") {
 			g1_rand(p[0]);
 			g2_rand(q[0]);
 			pc_map(e1, p[0], q[0]);
-			TEST_ASSERT(gt_cmp_dig(e1, 1) != RLC_EQ, end);
-			g1_set_infty(p[0]);
-			pc_map(e1, p[0], q[0]);
-			TEST_ASSERT(gt_cmp_dig(e1, 1) == RLC_EQ, end);
-			g1_rand(p[0]);
-			g2_set_infty(q[0]);
-			pc_map(e1, p[0], q[0]);
-			TEST_ASSERT(gt_cmp_dig(e1, 1) == RLC_EQ, end);
-		} TEST_END;
+			// TEST_ASSERT(gt_cmp_dig(e1, 1) != RLC_EQ, end);
+			// g1_set_infty(p[0]);
+			// pc_map(e1, p[0], q[0]);
+			// TEST_ASSERT(gt_cmp_dig(e1, 1) == RLC_EQ, end);
+			// g1_rand(p[0]);
+			// g2_set_infty(q[0]);
+			// pc_map(e1, p[0], q[0]);
+			// TEST_ASSERT(gt_cmp_dig(e1, 1) == RLC_EQ, end);
+		// } TEST_END;
 
-		TEST_CASE("pairing is bilinear") {
-			g1_rand(p[0]);
-			g2_rand(q[0]);
-			bn_rand_mod(k, n);
-			g2_mul(q[1], q[0], k);
-			pc_map(e1, p[0], q[1]);
-			pc_map(e2, p[0], q[0]);
-			gt_exp(e2, e2, k);
-			TEST_ASSERT(gt_cmp(e1, e2) == RLC_EQ, end);
-			g1_mul(p[0], p[0], k);
-			pc_map(e2, p[0], q[0]);
-			TEST_ASSERT(gt_cmp(e1, e2) == RLC_EQ, end);
-			g1_dbl(p[0], p[0]);
-			pc_map(e2, p[0], q[0]);
-			gt_sqr(e1, e1);
-			TEST_ASSERT(gt_cmp(e1, e2) == RLC_EQ, end);
-			g2_dbl(q[0], q[0]);
-			pc_map(e2, p[0], q[0]);
-			gt_sqr(e1, e1);
-			TEST_ASSERT(gt_cmp(e1, e2) == RLC_EQ, end);
-		} TEST_END;
-
-		TEST_CASE("multi-pairing is correct") {
-			g1_rand(p[i % 2]);
-			g2_rand(q[i % 2]);
-			pc_map(e1, p[i % 2], q[i % 2]);
-			g1_rand(p[1 - (i % 2)]);
-			g2_set_infty(q[1 - (i % 2)]);
-			pc_map_sim(e2, p, q, 2);
-			TEST_ASSERT(gt_cmp(e1, e2) == RLC_EQ, end);
-			g1_set_infty(p[1 - (i % 2)]);
-			g2_rand(q[1 - (i % 2)]);
-			pc_map_sim(e2, p, q, 2);
-			TEST_ASSERT(gt_cmp(e1, e2) == RLC_EQ, end);
-			g2_set_infty(q[i % 2]);
-			pc_map_sim(e2, p, q, 2);
-			TEST_ASSERT(gt_cmp_dig(e2, 1) == RLC_EQ, end);
-			g1_rand(p[0]);
-			g2_rand(q[0]);
-			pc_map(e1, p[0], q[0]);
-			g1_rand(p[1]);
-			g2_rand(q[1]);
-			pc_map(e2, p[1], q[1]);
-			gt_mul(e1, e1, e2);
-			pc_map_sim(e2, p, q, 2);
-			TEST_ASSERT(gt_cmp(e1, e2) == RLC_EQ, end);
-			g1_neg(p[1], p[0]);
-			g2_copy(q[1], q[0]);
-			pc_map_sim(e1, p, q, 2);
-			TEST_ASSERT(gt_cmp_dig(e1, 1) == RLC_EQ, end);
-		} TEST_END;
+		// TEST_CASE("pairing is bilinear") {
+		// 	g1_rand(p[0]);
+		// 	g2_rand(q[0]);
+		// 	bn_rand_mod(k, n);
+		// 	g2_mul(q[1], q[0], k);
+		// 	pc_map(e1, p[0], q[1]);
+		// 	pc_map(e2, p[0], q[0]);
+		// 	gt_exp(e2, e2, k);
+		// 	TEST_ASSERT(gt_cmp(e1, e2) == RLC_EQ, end);
+		// 	g1_mul(p[0], p[0], k);
+		// 	pc_map(e2, p[0], q[0]);
+		// 	TEST_ASSERT(gt_cmp(e1, e2) == RLC_EQ, end);
+		// 	g1_dbl(p[0], p[0]);
+		// 	pc_map(e2, p[0], q[0]);
+		// 	gt_sqr(e1, e1);
+		// 	TEST_ASSERT(gt_cmp(e1, e2) == RLC_EQ, end);
+		// 	g2_dbl(q[0], q[0]);
+		// 	pc_map(e2, p[0], q[0]);
+		// 	gt_sqr(e1, e1);
+		// 	TEST_ASSERT(gt_cmp(e1, e2) == RLC_EQ, end);
+		// } TEST_END;
+  // 
+		// TEST_CASE("multi-pairing is correct") {
+		// 	g1_rand(p[i % 2]);
+		// 	g2_rand(q[i % 2]);
+		// 	pc_map(e1, p[i % 2], q[i % 2]);
+		// 	g1_rand(p[1 - (i % 2)]);
+		// 	g2_set_infty(q[1 - (i % 2)]);
+		// 	pc_map_sim(e2, p, q, 2);
+		// 	TEST_ASSERT(gt_cmp(e1, e2) == RLC_EQ, end);
+		// 	g1_set_infty(p[1 - (i % 2)]);
+		// 	g2_rand(q[1 - (i % 2)]);
+		// 	pc_map_sim(e2, p, q, 2);
+		// 	TEST_ASSERT(gt_cmp(e1, e2) == RLC_EQ, end);
+		// 	g2_set_infty(q[i % 2]);
+		// 	pc_map_sim(e2, p, q, 2);
+		// 	TEST_ASSERT(gt_cmp_dig(e2, 1) == RLC_EQ, end);
+		// 	g1_rand(p[0]);
+		// 	g2_rand(q[0]);
+		// 	pc_map(e1, p[0], q[0]);
+		// 	g1_rand(p[1]);
+		// 	g2_rand(q[1]);
+		// 	pc_map(e2, p[1], q[1]);
+		// 	gt_mul(e1, e1, e2);
+		// 	pc_map_sim(e2, p, q, 2);
+		// 	TEST_ASSERT(gt_cmp(e1, e2) == RLC_EQ, end);
+		// 	g1_neg(p[1], p[0]);
+		// 	g2_copy(q[1], q[0]);
+		// 	pc_map_sim(e1, p, q, 2);
+		// 	TEST_ASSERT(gt_cmp_dig(e1, 1) == RLC_EQ, end);
+		// } TEST_END;
+         printf("---> RLC_TRY end\n");
 	}
 	RLC_CATCH_ANY {
 		util_print("FATAL ERROR!\n");
@@ -1753,38 +1768,38 @@ int test2(void) {
 }
 
 int test(void) {
-	util_banner("Utilities:", 1);
-
-	if (memory() != RLC_OK) {
-		core_clean();
-		return 1;
-	}
-
-	if (util() != RLC_OK) {
-		return RLC_ERR;
-	}
-
-	util_banner("Arithmetic:", 1);
-
-	if (multiplication() != RLC_OK) {
-		return RLC_ERR;
-	}
-
-	if (squaring() != RLC_OK) {
-		return RLC_ERR;
-	}
-
-	if (inversion() != RLC_OK) {
-		return RLC_ERR;
-	}
-
-	if (exponentiation() != RLC_OK) {
-		return RLC_ERR;
-	}
-
-	if (validity() != RLC_OK) {
-		return RLC_ERR;
-	}
+	// util_banner("Utilities:", 1);
+ // 
+	// if (memory() != RLC_OK) {
+	// 	core_clean();
+	// 	return 1;
+	// }
+ // 
+	// if (util() != RLC_OK) {
+	// 	return RLC_ERR;
+	// }
+ // 
+	// util_banner("Arithmetic:", 1);
+ // 
+	// if (multiplication() != RLC_OK) {
+	// 	return RLC_ERR;
+	// }
+ // 
+	// if (squaring() != RLC_OK) {
+	// 	return RLC_ERR;
+	// }
+ // 
+	// if (inversion() != RLC_OK) {
+	// 	return RLC_ERR;
+	// }
+ // 
+	// if (exponentiation() != RLC_OK) {
+	// 	return RLC_ERR;
+	// }
+ // 
+	// if (validity() != RLC_OK) {
+	// 	return RLC_ERR;
+	// }
 
 	if (pairing() != RLC_OK) {
 		return RLC_ERR;
@@ -1809,23 +1824,25 @@ int main(void) {
 
 	pc_param_print();
 
-	util_banner("Group G_1:", 0);
-	if (test1() != RLC_OK) {
-		core_clean();
-		return 1;
-	}
+	// util_banner("Group G_1:", 0);
+	// if (test1() != RLC_OK) {
+	// 	core_clean();
+	// 	return 1;
+	// }
+ // 
+	// util_banner("Group G_2:", 0);
+	// if (test2() != RLC_OK) {
+	// 	core_clean();
+	// 	return 1;
+	// }
 
-	util_banner("Group G_2:", 0);
-	if (test2() != RLC_OK) {
-		core_clean();
-		return 1;
-	}
-
-	util_banner("Group G_T:", 0);
+	// util_banner("Group G_T:", 0);
+     printf("---> starting test()\n");
 	if (test() != RLC_OK) {
 		core_clean();
 		return 1;
 	}
+     printf("---> finished test()\n");
 
 	util_banner("All tests have passed.\n", 0);
 

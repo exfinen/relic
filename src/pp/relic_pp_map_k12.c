@@ -164,6 +164,8 @@ static void pp_mil_lit_k12(fp12_t r, ep_t *t, ep_t *p, ep2_t *q, int m, bn_t a) 
 		}
 
 		fp12_zero(l);
+          printf("---> starting miller lit loop\n");
+
 		for (int i = bn_bits(a) - 2; i >= 0; i--) {
 			fp12_sqr(r, r);
 			for (j = 0; j < m; j++) {
@@ -175,6 +177,7 @@ static void pp_mil_lit_k12(fp12_t r, ep_t *t, ep_t *p, ep2_t *q, int m, bn_t a) 
 				}
 			}
 		}
+          printf("---> finished miller lit loop\n");
 	}
 	RLC_CATCH_ANY {
 		RLC_THROW(ERR_CAUGHT);
@@ -332,6 +335,8 @@ void pp_map_sim_tatep_k12(fp12_t r, const ep_t *p, const ep2_t *q, int m) {
 #if PP_MAP == WEILP || !defined(STRIP)
 
 void pp_map_weilp_k12(fp12_t r, const ep_t p, const ep2_t q) {
+    printf("--------> Mapping weil...\n");
+
 	ep_t _p[1], t0[1];
 	ep2_t _q[1], t1[1];
 	fp12_t r0, r1;
