@@ -56,13 +56,14 @@ static void pp_mil_k12(fp12_t r, ep2_t *t, ep2_t *q, ep_t *p, int m, bn_t a) {
 	int i, j;
 	int8_t s[RLC_FP_BITS + 1];
 
+	printf("------> entered pp_mil_k12\n");
 	if (m == 0) {
 		return;
 	}
 
 	fp12_null(l);
 
-	RLC_TRY {
+	//RLC_TRY {
 		fp12_new(l);
 		if (_p == NULL || _q == NULL) {
 			RLC_THROW(ERR_NO_MEMORY);
@@ -118,10 +119,11 @@ static void pp_mil_k12(fp12_t r, ep2_t *t, ep2_t *q, ep_t *p, int m, bn_t a) {
 				}
 			}
 		}
-	}
-	RLC_CATCH_ANY {
-		RLC_THROW(ERR_CAUGHT);
-	}
+	printf("------> exited pp_mil_k12\n");
+	//}
+	// RLC_CATCH_ANY {
+	// 	RLC_THROW(ERR_CAUGHT);
+	// }
 	RLC_FINALLY {
 		fp12_free(l);
 		for (j = 0; j < m; j++) {
@@ -144,14 +146,22 @@ static void pp_mil_k12(fp12_t r, ep2_t *t, ep2_t *q, ep_t *p, int m, bn_t a) {
  * @param[in] n 			- the number of pairings to evaluate.
  * @param[in] a				- the loop parameter.
  */
-static void pp_mil_lit_k12(fp12_t r, ep_t *t, ep_t *p, ep2_t *q, int m, bn_t a) {
+static void pp_mil_lit_k12(
+	fp12_t r,  // result 
+	ep_t *t,   // resulting point
+	ep_t *p,   // G1 point
+	ep2_t *q,  // G2 point
+	int m,     // number of pairings to evalualte
+	bn_t a     // loop parameter
+) {
 	fp12_t l;
 	ep2_t *_q = RLC_ALLOCA(ep2_t, m);
 	int j;
 
+	printf("------> entered pp_mil_lit_k12\n");
 	fp12_null(l);
 
-	RLC_TRY {
+	//RLC_TRY {
 		if (_q == NULL) {
 			RLC_THROW(ERR_NO_MEMORY);
 		}
@@ -164,7 +174,6 @@ static void pp_mil_lit_k12(fp12_t r, ep_t *t, ep_t *p, ep2_t *q, int m, bn_t a) 
 		}
 
 		fp12_zero(l);
-          printf("---> starting miller lit loop\n");
 
 		for (int i = bn_bits(a) - 2; i >= 0; i--) {
 			fp12_sqr(r, r);
@@ -177,11 +186,11 @@ static void pp_mil_lit_k12(fp12_t r, ep_t *t, ep_t *p, ep2_t *q, int m, bn_t a) 
 				}
 			}
 		}
-          printf("---> finished miller lit loop\n");
-	}
-	RLC_CATCH_ANY {
-		RLC_THROW(ERR_CAUGHT);
-	}
+	printf("------> exited pp_mil_lit_k12\n");
+	//}
+	// RLC_CATCH_ANY {
+	// 	RLC_THROW(ERR_CAUGHT);
+	// }
 	RLC_FINALLY {
 		fp12_free(l);
 		for (j = 0; j < m; j++) {
@@ -335,13 +344,14 @@ void pp_map_sim_tatep_k12(fp12_t r, const ep_t *p, const ep2_t *q, int m) {
 #if PP_MAP == WEILP || !defined(STRIP)
 
 void pp_map_weilp_k12(fp12_t r, const ep_t p, const ep2_t q) {
-    printf("--------> Mapping weil in pp_map_weilp_k12...\n");
-
 	ep_t _p[1], t0[1];
 	ep2_t _q[1], t1[1];
 	fp12_t r0, r1;
 	bn_t n;
 
+    printf("-----> entered pp_map_weilp_k12...\n");
+
+	// initialize values
 	ep_null(_p[0]);
 	ep_null(t0[0]);
 	ep2_null(_q[0]);
@@ -350,31 +360,53 @@ void pp_map_weilp_k12(fp12_t r, const ep_t p, const ep2_t q) {
 	fp12_null(r1);
 	bn_null(n);
 
-	//RLC_TRY {
-		ep_new(_p[0]);
-		ep_new(t0[0]);
-		ep2_new(_q[0]);
-		ep2_new(t1[0]);
-		fp12_new(r0);
-		fp12_new(r1);
-		bn_new(n);
+	// allocate memory to values
+	ep_new(_p[0]);
+	ep_new(t0[0]);
+	ep2_new(_q[0]);
+	ep2_new(t1[0]);
+	fp12_new(r0);
+	fp12_new(r1);
+	bn_new(n);
 
-		ep_norm(_p[0], p);
-		ep2_norm(_q[0], q);
-		ep_curve_get_ord(n);
-		bn_sub_dig(n, n, 1);
-		fp12_set_dig(r0, 1);
-		fp12_set_dig(r1, 1);
+	// normalize and assign G1 point p and G2 point q to local variables
+	ep_norm(_p[0], p);
+	ep2_norm(_q[0], q);
 
-		if (!ep_is_infty(_p[0]) && !ep2_is_infty(_q[0])) {
-			pp_mil_lit_k12(r0, t0, _p, _q, 1, n);
-			pp_mil_k12(r1, t1, _q, _p, 1, n);
-			fp12_inv(r1, r1);
-			fp12_mul(r0, r0, r1);
-			fp12_inv(r1, r0);
-			fp12_inv_cyc(r0, r0);
-		}
-		fp12_mul(r, r0, r1);
+	// get group order n
+	ep_curve_get_ord(n);
+
+	// not sure what this is doing now
+	bn_sub_dig(n, n, 1);
+	fp12_set_dig(r0, 1);
+	fp12_set_dig(r1, 1);
+
+	// if both G1 and G2 points are not point at infinity, do the pairing
+	if (!ep_is_infty(_p[0]) && !ep2_is_infty(_q[0])) {
+
+		// t0, _p are G1 points
+		// _p is G2 point
+		// n is group order
+		// r0 is fp12 element
+		pp_mil_lit_k12(r0, t0, _p, _q, 1, n);
+		
+		// t1, _q are G2 points
+		// _p is G1 point
+		// n is group order
+		// r1 is fp12 element
+		// pp_mil_k12(r1, t1, _q, _p, 1, n);
+
+		fp12_inv(r1, r1);
+		fp12_mul(r0, r0, r1);
+		fp12_inv(r1, r0);
+		fp12_inv_cyc(r0, r0);
+
+	}
+
+	fp12_mul(r, r0, r1);
+
+    printf("-----> exited pp_map_weilp_k12...\n");
+
 	//}
 	//rlc_catch_any {
 	//	rlc_throw(err_caught);

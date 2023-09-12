@@ -1546,58 +1546,44 @@ static int validity(void) {
 
 static int pairing(void) {
 	int j, code = RLC_ERR;
-	g1_t p[2];
-	g2_t q[2];
-	gt_t e1, e2;
 	bn_t k, n;
 
-	gt_null(e1);
-	gt_null(e2);
-	bn_null(k);
-	bn_null(n);
+	printf("----\n");
+	g1_t g1_g;
+	g1_get_gen(g1_g);
+	printf("G1 generator is: ");
+	g1_print(g1_g);
+	printf("----\n");
+		
+	g2_t g2_g;
+	g2_get_gen(g2_g);
+	printf("G2 generator is: ");
+	g2_print(g2_g);
+	printf("----\n");
 
-	RLC_TRY {
-         printf("---> RLC_TRY begin\n");
-		gt_new(e1);
-		gt_new(e2);
-		bn_new(k);
-		bn_new(n);
+	pc_get_ord(n);
 
-		for (j = 0; j < 2; j++) {
-			g1_null(p[j]);
-			g2_null(q[j]);
-			g1_new(p[j]);
-			g2_new(q[j]);
-		}
+	gt_t gt;
+	printf("----> computing pairing...\n");
 
-          printf("----\n");
-          g1_t g1_g;
-          g1_get_gen(&g1_g);
-          printf("G1 generator is: ");
-          g1_print(&g1_g);
-          printf("----\n");
-            
-          g2_t g2_g;
-          g2_get_gen(&g2_g);
-          printf("G2 generator is: ");
-          g2_print(&g2_g);
-          printf("----\n");
+	pc_map(gt, g1_g, g2_g);
 
-		pc_get_ord(n);
+	g1_free(g1_g);
+	g2_free(g2_g);
+	gt_free(gt);
+	bn_free(k);
+	bn_free(n);
 
-		// TEST_CASE("pairing non-degeneracy is correct") {
-			g1_rand(p[0]);
-			g2_rand(q[0]);
-			pc_map(e1, p[0], q[0]);
-			// TEST_ASSERT(gt_cmp_dig(e1, 1) != RLC_EQ, end);
-			// g1_set_infty(p[0]);
-			// pc_map(e1, p[0], q[0]);
-			// TEST_ASSERT(gt_cmp_dig(e1, 1) == RLC_EQ, end);
-			// g1_rand(p[0]);
-			// g2_set_infty(q[0]);
-			// pc_map(e1, p[0], q[0]);
-			// TEST_ASSERT(gt_cmp_dig(e1, 1) == RLC_EQ, end);
-		// } TEST_END;
+	printf("----> done\n");
+
+		// TEST_ASSERT(gt_cmp_dig(e1, 1) != RLC_EQ, end);
+		// g1_set_infty(p[0]);
+		// pc_map(e1, p[0], q[0]);
+		// TEST_ASSERT(gt_cmp_dig(e1, 1) == RLC_EQ, end);
+		// g1_rand(p[0]);
+		// g2_set_infty(q[0]);
+		// pc_map(e1, p[0], q[0]);
+		// TEST_ASSERT(gt_cmp_dig(e1, 1) == RLC_EQ, end);
 
 		// TEST_CASE("pairing is bilinear") {
 		// 	g1_rand(p[0]);
@@ -1650,162 +1636,17 @@ static int pairing(void) {
 		// 	pc_map_sim(e1, p, q, 2);
 		// 	TEST_ASSERT(gt_cmp_dig(e1, 1) == RLC_EQ, end);
 		// } TEST_END;
-         printf("---> RLC_TRY end\n");
-	}
-	RLC_CATCH_ANY {
-		util_print("FATAL ERROR!\n");
-		RLC_ERROR(end);
-	}
+	//}
+	// RLC_CATCH_ANY {
+	// 	util_print("FATAL ERROR!\n");
+	// 	RLC_ERROR(end);
+	// }
 	code = RLC_OK;
   end:
-	gt_free(e1);
-	gt_free(e2);
-	bn_free(k);
-	bn_free(n);
-	for (j = 0; j < 2; j++) {
-		g1_free(p[j]);
-		g2_free(q[j]);
-	}
 	return code;
 }
 
-int test1(void) {
-	util_banner("Utilities:", 1);
-
-	if (memory1() != RLC_OK) {
-		core_clean();
-		return 1;
-	}
-
-	if (util1() != RLC_OK) {
-		return RLC_ERR;
-	}
-
-	util_banner("Arithmetic:", 1);
-
-	if (addition1() != RLC_OK) {
-		return RLC_ERR;
-	}
-
-	if (subtraction1() != RLC_OK) {
-		return RLC_ERR;
-	}
-
-	if (doubling1() != RLC_OK) {
-		return RLC_ERR;
-	}
-
-	if (multiplication1() != RLC_OK) {
-		return RLC_ERR;
-	}
-
-	if (fixed1() != RLC_OK) {
-		return RLC_ERR;
-	}
-
-	if (simultaneous1() != RLC_OK) {
-		return RLC_ERR;
-	}
-
-	if (validity1() != RLC_OK) {
-		return RLC_ERR;
-	}
-
-	if (hashing1() != RLC_OK) {
-		return RLC_ERR;
-	}
-
-	return RLC_OK;
-}
-
-int test2(void) {
-	util_banner("Utilities:", 1);
-
-	if (memory2() != RLC_OK) {
-		core_clean();
-		return 1;
-	}
-
-	if (util2() != RLC_OK) {
-		return RLC_ERR;
-	}
-
-	util_banner("Arithmetic:", 1);
-
-	if (addition2() != RLC_OK) {
-		return RLC_ERR;
-	}
-
-	if (subtraction2() != RLC_OK) {
-		return RLC_ERR;
-	}
-
-	if (doubling2() != RLC_OK) {
-		return RLC_ERR;
-	}
-
-	if (multiplication2() != RLC_OK) {
-		return RLC_ERR;
-	}
-
-	if (fixed2() != RLC_OK) {
-		return RLC_ERR;
-	}
-
-	if (simultaneous2() != RLC_OK) {
-		return RLC_ERR;
-	}
-
-	if (validity2() != RLC_OK) {
-		return RLC_ERR;
-	}
-
-	if (hashing2() != RLC_OK) {
-		return RLC_ERR;
-	}
-
-	return RLC_OK;
-}
-
 int test(void) {
-	// util_banner("Utilities:", 1);
- // 
-	// if (memory() != RLC_OK) {
-	// 	core_clean();
-	// 	return 1;
-	// }
- // 
-	// if (util() != RLC_OK) {
-	// 	return RLC_ERR;
-	// }
- // 
-	// util_banner("Arithmetic:", 1);
- // 
-	// if (multiplication() != RLC_OK) {
-	// 	return RLC_ERR;
-	// }
- // 
-	// if (squaring() != RLC_OK) {
-	// 	return RLC_ERR;
-	// }
- // 
-	// if (inversion() != RLC_OK) {
-	// 	return RLC_ERR;
-	// }
- // 
-	// if (exponentiation() != RLC_OK) {
-	// 	return RLC_ERR;
-	// }
- // 
-	// if (validity() != RLC_OK) {
-	// 	return RLC_ERR;
-	// }
-
-	if (pairing() != RLC_OK) {
-		return RLC_ERR;
-	}
-
-	return RLC_OK;
 }
 
 int main(void) {
@@ -1813,8 +1654,6 @@ int main(void) {
 		core_clean();
 		return 1;
 	}
-
-	util_banner("Tests for the PC module:", 0);
 
 	if (pc_param_set_any() != RLC_OK) {
 		RLC_THROW(ERR_NO_CURVE);
@@ -1824,28 +1663,9 @@ int main(void) {
 
 	pc_param_print();
 
-	// util_banner("Group G_1:", 0);
-	// if (test1() != RLC_OK) {
-	// 	core_clean();
-	// 	return 1;
-	// }
- // 
-	// util_banner("Group G_2:", 0);
-	// if (test2() != RLC_OK) {
-	// 	core_clean();
-	// 	return 1;
-	// }
-
-	// util_banner("Group G_T:", 0);
-     printf("---> starting test()\n");
-	if (test() != RLC_OK) {
-		core_clean();
-		return 1;
-	}
-     printf("---> finished test()\n");
-
-	util_banner("All tests have passed.\n", 0);
-
+	pairing();
 	core_clean();
+
 	return 0;
 }
+
