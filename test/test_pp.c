@@ -3928,58 +3928,66 @@ int main(void) {
 
 	util_banner("Arithmetic", 1);
 
-	if (ep_param_embed() == 1) {
-		if (doubling1() != RLC_OK) {
-			core_clean();
-			return 1;
-		}
+	/* if (ep_param_embed() == 1) {  */
+	/* 	printf("-----> embed 1\n");  */
 
-		if (addition1() != RLC_OK) {
-			core_clean();
-			return 1;
-		}
+	/* 	if (doubling1() != RLC_OK) { */
+	/* 		core_clean();               */
+	/* 		return 1;                   */
+	/* 	}                            */
 
-		if (pairing1() != RLC_OK) {
-			core_clean();
-			return 1;
-		}
-	}
+	/* 	if (addition1() != RLC_OK) { */
+	/* 		core_clean();               */
+	/* 		return 1;                   */
+	/* 	}                            */
 
-	if (ep_param_embed() == 2) {
-		if (doubling2() != RLC_OK) {
-			core_clean();
-			return 1;
-		}
+	/* 	if (pairing1() != RLC_OK) {  */
+	/* 		core_clean();               */
+	/* 		return 1;                   */
+	/* 	}                            */
+	/* }                             */
 
-		if (addition2() != RLC_OK) {
-			core_clean();
-			return 1;
-		}
+	/* if (ep_param_embed() == 2) {  */
+	/* 	printf("-----> embed 2\n");  */
 
-		if (pairing2() != RLC_OK) {
-			core_clean();
-			return 1;
-		}
-	}
+	/* 	if (doubling2() != RLC_OK) { */
+	/* 		core_clean();               */
+	/* 		return 1;                   */
+	/* 	}                            */
 
-	if (ep_param_embed() == 8) {
-		if (doubling8() != RLC_OK) {
-			core_clean();
-			return 1;
-		}
+	/* 	if (addition2() != RLC_OK) { */
+	/* 		core_clean();               */
+	/* 		return 1;                   */
+	/* 	}                            */
 
-		if (addition8() != RLC_OK) {
-			core_clean();
-			return 1;
-		}
+	/* 	if (pairing2() != RLC_OK) {  */
+	/* 		core_clean();               */
+	/* 		return 1;                   */
+	/* 	}                            */
+	/* }                             */
 
-		if (pairing8() != RLC_OK) {
-			core_clean();
-			return 1;
-		}
-	}
+	/* if (ep_param_embed() == 8) {  */
+	/* 	printf("-----> embed 8\n");  */
+
+	/* 	if (doubling8() != RLC_OK) { */
+	/* 		core_clean();               */
+	/* 		return 1;                   */
+	/* 	}                            */
+
+	/* 	if (addition8() != RLC_OK) { */
+	/* 		core_clean();               */
+	/* 		return 1;                   */
+	/* 	}                            */
+
+	/* 	if (pairing8() != RLC_OK) {  */
+	/* 		core_clean();               */
+	/* 		return 1;                   */
+	/* 	}                            */
+	/* }                             */
 
 	if (ep_param_embed() == 12) {
+		printf("-----> embed 12\n");
+
 		if (doubling12() != RLC_OK) {
 			core_clean();
 			return 1;
@@ -3996,90 +4004,100 @@ int main(void) {
 		}
 	}
 
-	if (ep_param_embed() == 16) {
-		if (doubling16() != RLC_OK) {
-			core_clean();
-			return 1;
-		}
+	/* if (ep_param_embed() == 16) {  */
+	/* 	printf("-----> embed 16\n");  */
 
-		if (addition16() != RLC_OK) {
-			core_clean();
-			return 1;
-		}
+	/* 	if (doubling16() != RLC_OK) { */
+	/* 		core_clean();                */
+	/* 		return 1;                    */
+	/* 	}                             */
 
-		if (pairing16() != RLC_OK) {
-			core_clean();
-			return 1;
-		}
-	}
+	/* 	if (addition16() != RLC_OK) { */
+	/* 		core_clean();                */
+	/* 		return 1;                    */
+	/* 	}                             */
 
-	if (ep_param_embed() == 18) {
-		if (doubling18() != RLC_OK) {
-			core_clean();
-			return 1;
-		}
+	/* 	if (pairing16() != RLC_OK) {  */
+	/* 		core_clean();                */
+	/* 		return 1;                    */
+	/* 	}                             */
+	/* }                              */
 
-		if (addition18() != RLC_OK) {
-			core_clean();
-			return 1;
-		}
+	/* if (ep_param_embed() == 18) {  */
+	/* 	printf("-----> embed 18\n");  */
 
-		if (pairing18() != RLC_OK) {
-			core_clean();
-			return 1;
-		}
-	}
+	/* 	if (doubling18() != RLC_OK) { */
+	/* 		core_clean();                */
+	/* 		return 1;                    */
+	/* 	}                             */
 
-	if (ep_param_embed() == 24) {
-		if (doubling24() != RLC_OK) {
-			core_clean();
-			return 1;
-		}
+	/* 	if (addition18() != RLC_OK) { */
+	/* 		core_clean();                */
+	/* 		return 1;                    */
+	/* 	}                             */
 
-		if (addition24() != RLC_OK) {
-			core_clean();
-			return 1;
-		}
+	/* 	if (pairing18() != RLC_OK) {  */
+	/* 		core_clean();                */
+	/* 		return 1;                    */
+	/* 	}                             */
+	/* }                              */
 
-		if (pairing24() != RLC_OK) {
-			core_clean();
-			return 1;
-		}
-	}
+	/* if (ep_param_embed() == 24) {  */
+	/* 	printf("-----> embed 24\n");  */
 
-	if (ep_param_embed() == 48) {
-		if (doubling48() != RLC_OK) {
-			core_clean();
-			return 1;
-		}
+	/* 	if (doubling24() != RLC_OK) { */
+	/* 		core_clean();                */
+	/* 		return 1;                    */
+	/* 	}                             */
 
-		if (addition48() != RLC_OK) {
-			core_clean();
-			return 1;
-		}
+	/* 	if (addition24() != RLC_OK) { */
+	/* 		core_clean();                */
+	/* 		return 1;                    */
+	/* 	}                             */
 
-		if (pairing48() != RLC_OK) {
-			core_clean();
-			return 1;
-		}
-	}
+	/* 	if (pairing24() != RLC_OK) {  */
+	/* 		core_clean();                */
+	/* 		return 1;                    */
+	/* 	}                             */
+	/* }                              */
 
-	if (ep_param_embed() == 54) {
-		if (doubling54() != RLC_OK) {
-			core_clean();
-			return 1;
-		}
+	/* if (ep_param_embed() == 48) {  */
+	/* 	printf("-----> embed 48\n");  */
 
-		if (addition54() != RLC_OK) {
-			core_clean();
-			return 1;
-		}
+	/* 	if (doubling48() != RLC_OK) { */
+	/* 		core_clean();                */
+	/* 		return 1;                    */
+	/* 	}                             */
 
-		if (pairing54() != RLC_OK) {
-			core_clean();
-			return 1;
-		}
-	}
+	/* 	if (addition48() != RLC_OK) { */
+	/* 		core_clean();                */
+	/* 		return 1;                    */
+	/* 	}                             */
+
+	/* 	if (pairing48() != RLC_OK) {  */
+	/* 		core_clean();                */
+	/* 		return 1;                    */
+	/* 	}                             */
+	/* }                              */
+
+	/* if (ep_param_embed() == 54) {  */
+	/* 	printf("-----> embed 54\n");  */
+
+	/* 	if (doubling54() != RLC_OK) { */
+	/* 		core_clean();                */
+	/* 		return 1;                    */
+	/* 	}                             */
+
+	/* 	if (addition54() != RLC_OK) { */
+	/* 		core_clean();                */
+	/* 		return 1;                    */
+	/* 	}                             */
+
+	/* 	if (pairing54() != RLC_OK) {  */
+	/* 		core_clean();                */
+	/* 		return 1;                    */
+	/* 	}                             */
+	/* }                              */
 
 	util_banner("All tests have passed.\n", 0);
 

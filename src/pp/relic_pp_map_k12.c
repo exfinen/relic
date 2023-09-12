@@ -335,7 +335,7 @@ void pp_map_sim_tatep_k12(fp12_t r, const ep_t *p, const ep2_t *q, int m) {
 #if PP_MAP == WEILP || !defined(STRIP)
 
 void pp_map_weilp_k12(fp12_t r, const ep_t p, const ep2_t q) {
-    printf("--------> Mapping weil...\n");
+    printf("--------> Mapping weil in pp_map_weilp_k12...\n");
 
 	ep_t _p[1], t0[1];
 	ep2_t _q[1], t1[1];
@@ -350,7 +350,7 @@ void pp_map_weilp_k12(fp12_t r, const ep_t p, const ep2_t q) {
 	fp12_null(r1);
 	bn_null(n);
 
-	RLC_TRY {
+	//RLC_TRY {
 		ep_new(_p[0]);
 		ep_new(t0[0]);
 		ep2_new(_q[0]);
@@ -375,10 +375,10 @@ void pp_map_weilp_k12(fp12_t r, const ep_t p, const ep2_t q) {
 			fp12_inv_cyc(r0, r0);
 		}
 		fp12_mul(r, r0, r1);
-	}
-	RLC_CATCH_ANY {
-		RLC_THROW(ERR_CAUGHT);
-	}
+	//}
+	//rlc_catch_any {
+	//	rlc_throw(err_caught);
+	//}
 	RLC_FINALLY {
 		ep_free(_p[0]);
 		ep_free(t0[0]);
