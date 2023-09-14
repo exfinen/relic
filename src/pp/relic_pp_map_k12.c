@@ -147,12 +147,12 @@ static void pp_mil_k12(fp12_t r, ep2_t *t, ep2_t *q, ep_t *p, int m, bn_t a) {
  * @param[in] a				- the loop parameter.
  */
 static void pp_mil_lit_k12(
-	fp12_t r,  // result 
+	fp12_t r,  // result -> 1
 	ep_t *t,   // resulting point
 	ep_t *p,   // G1 point
 	ep2_t *q,  // G2 point
-	int m,     // number of pairings to evalualte
-	bn_t a     // loop parameter
+	int m,     // number of pairings to evalualte -> 1
+	bn_t a     // loop parameter -> n
 ) {
 	fp12_t l;
 	ep2_t *_q = RLC_ALLOCA(ep2_t, m);
@@ -161,43 +161,88 @@ static void pp_mil_lit_k12(
 	printf("------> entered pp_mil_lit_k12\n");
 	fp12_null(l);
 
-	//RLC_TRY {
-		if (_q == NULL) {
-			RLC_THROW(ERR_NO_MEMORY);
-		}
-		fp12_new(l);
-		for (j = 0; j < m; j++) {
-			ep2_null(_q[j]);
-			ep2_new(_q[j]);
-			ep_copy(t[j], p[j]);
-			ep2_neg(_q[j], q[j]);
-		}
+	if (_q == NULL) {
+		RLC_THROW(ERR_NO_MEMORY);
+	}
+	fp12_new(l);
+	for (j = 0; j < m; j++) {
+		ep2_null(_q[j]);
+		ep2_new(_q[j]);
+		ep_copy(t[j], p[j]);
+		ep2_neg(_q[j], q[j]);
+	}
 
-		fp12_zero(l);
+	fp12_zero(l);
 
-		for (int i = bn_bits(a) - 2; i >= 0; i--) {
-			fp12_sqr(r, r);
-			for (j = 0; j < m; j++) {
-				pp_dbl_lit_k12(l, t[j], t[j], _q[j]);
+	// a = group order
+	// loop i from 253 to 0
+	printf("group order: ");
+	bn_print(a);
+	printf("\n");
+	
+	// print out bit vector
+	printf("bit vector: ");
+	for (int i = bn_bits(a) - 2; i >= 0; i--) {
+		if (bn_get_bit(a, i)) {
+			printf("1");
+		} else {
+			printf("0");
+		}
+	}
+	printf("\n");
+
+	for (int i = bn_bits(a) - 2; i >= 0; i--) {
+		printf("r=");
+		fp12_print(r);
+		printf("\n");
+
+		// r = r * r
+		fp12_sqr(r, r);
+
+		// initially
+		// - _q[0] = q[0]   // G1 point
+		// - t[0] = p[0]    // G2 point
+		// - l = 0          // Fp12 element
+		for (j = 0; j < m; j++) {  // m = 1
+			printf("G1 point before dbl:\n");
+			g1_print(t[j]);
+	
+			printf("\nl:\n");
+			fp12_print(l);
+	
+			pp_dbl_lit_k12(l, t[j], t[j], _q[j]);
+
+			printf("\nG1 point after dbl:\n");
+			ep_t norm_p;
+			g1_norm(&norm_p, t[j]);
+			g1_print(&norm_p);
+	
+			printf("\nl:\n");
+			fp12_print(l);
+
+			goto OUT;
+	
+			// r = r * l
+			fp12_mul(r, r, l);
+	
+			// if i-th bit of n is set
+			if (bn_get_bit(a, i)) {
+
+				pp_add_lit_k12(l, t[j], p[j], q[j]);
+
+				// r = r * l
 				fp12_mul(r, r, l);
-				if (bn_get_bit(a, i)) {
-					pp_add_lit_k12(l, t[j], p[j], q[j]);
-					fp12_mul(r, r, l);
-				}
 			}
 		}
-	printf("------> exited pp_mil_lit_k12\n");
-	//}
-	// RLC_CATCH_ANY {
-	// 	RLC_THROW(ERR_CAUGHT);
-	// }
-	RLC_FINALLY {
-		fp12_free(l);
-		for (j = 0; j < m; j++) {
-			ep2_free(_q[j]);
-		}
-		RLC_FREE(_q);
 	}
+OUT:
+	printf("------> exited pp_mil_lit_k12\n");
+
+	fp12_free(l);
+	for (j = 0; j < m; j++) {
+		ep2_free(_q[j]);
+	}
+	RLC_FREE(_q);
 }
 
 /**

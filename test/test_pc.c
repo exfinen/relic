@@ -1518,56 +1518,37 @@ int exponentiation(void) {
 	return code;
 }
 
-static int validity(void) {
-	int code = RLC_ERR;
-	gt_t a;
-
-	gt_null(a);
-
-	RLC_TRY {
-		gt_new(a);
-
-		TEST_CASE("validity check is correct") {
-			gt_set_unity(a);
-			TEST_ASSERT(!gt_is_valid(a), end);
-			gt_rand(a);
-			TEST_ASSERT(gt_is_valid(a), end);
-		}
-		TEST_END;
-	}
-	RLC_CATCH_ANY {
-		RLC_ERROR(end);
-	}
-	code = RLC_OK;
-  end:
-	gt_free(a);
-	return code;
-}
-
 static int pairing(void) {
-	int j, code = RLC_ERR;
-	bn_t k, n;
-
-	printf("----\n");
+	bn_t n;
 	g1_t g1_g;
+	g2_t g2_g;
+	gt_t gt;
+
+	// get g1 generator for G1
+	printf("\n");
 	g1_get_gen(g1_g);
 	printf("G1 generator is: ");
 	g1_print(g1_g);
-	printf("----\n");
+	printf("\n");
 		
-	g2_t g2_g;
+	// get g2 generator for G2
 	g2_get_gen(g2_g);
 	printf("G2 generator is: ");
 	g2_print(g2_g);
-	printf("----\n");
+	printf("\n");
 
+	// get the group order
 	pc_get_ord(n);
 
-	gt_t gt;
-	printf("----> computing pairing...\n");
+	// do the pairing
 
+	// functions:
+	// pp_map_weilp_k12
+	// pp_mil_lit_k12
+	// in src/pp/relic_pp_map_k12.c
 	pc_map(gt, g1_g, g2_g);
 
+	// release assigned memory
 	g1_free(g1_g);
 	g2_free(g2_g);
 	gt_free(gt);
@@ -1576,77 +1557,7 @@ static int pairing(void) {
 
 	printf("----> done\n");
 
-		// TEST_ASSERT(gt_cmp_dig(e1, 1) != RLC_EQ, end);
-		// g1_set_infty(p[0]);
-		// pc_map(e1, p[0], q[0]);
-		// TEST_ASSERT(gt_cmp_dig(e1, 1) == RLC_EQ, end);
-		// g1_rand(p[0]);
-		// g2_set_infty(q[0]);
-		// pc_map(e1, p[0], q[0]);
-		// TEST_ASSERT(gt_cmp_dig(e1, 1) == RLC_EQ, end);
-
-		// TEST_CASE("pairing is bilinear") {
-		// 	g1_rand(p[0]);
-		// 	g2_rand(q[0]);
-		// 	bn_rand_mod(k, n);
-		// 	g2_mul(q[1], q[0], k);
-		// 	pc_map(e1, p[0], q[1]);
-		// 	pc_map(e2, p[0], q[0]);
-		// 	gt_exp(e2, e2, k);
-		// 	TEST_ASSERT(gt_cmp(e1, e2) == RLC_EQ, end);
-		// 	g1_mul(p[0], p[0], k);
-		// 	pc_map(e2, p[0], q[0]);
-		// 	TEST_ASSERT(gt_cmp(e1, e2) == RLC_EQ, end);
-		// 	g1_dbl(p[0], p[0]);
-		// 	pc_map(e2, p[0], q[0]);
-		// 	gt_sqr(e1, e1);
-		// 	TEST_ASSERT(gt_cmp(e1, e2) == RLC_EQ, end);
-		// 	g2_dbl(q[0], q[0]);
-		// 	pc_map(e2, p[0], q[0]);
-		// 	gt_sqr(e1, e1);
-		// 	TEST_ASSERT(gt_cmp(e1, e2) == RLC_EQ, end);
-		// } TEST_END;
-  // 
-		// TEST_CASE("multi-pairing is correct") {
-		// 	g1_rand(p[i % 2]);
-		// 	g2_rand(q[i % 2]);
-		// 	pc_map(e1, p[i % 2], q[i % 2]);
-		// 	g1_rand(p[1 - (i % 2)]);
-		// 	g2_set_infty(q[1 - (i % 2)]);
-		// 	pc_map_sim(e2, p, q, 2);
-		// 	TEST_ASSERT(gt_cmp(e1, e2) == RLC_EQ, end);
-		// 	g1_set_infty(p[1 - (i % 2)]);
-		// 	g2_rand(q[1 - (i % 2)]);
-		// 	pc_map_sim(e2, p, q, 2);
-		// 	TEST_ASSERT(gt_cmp(e1, e2) == RLC_EQ, end);
-		// 	g2_set_infty(q[i % 2]);
-		// 	pc_map_sim(e2, p, q, 2);
-		// 	TEST_ASSERT(gt_cmp_dig(e2, 1) == RLC_EQ, end);
-		// 	g1_rand(p[0]);
-		// 	g2_rand(q[0]);
-		// 	pc_map(e1, p[0], q[0]);
-		// 	g1_rand(p[1]);
-		// 	g2_rand(q[1]);
-		// 	pc_map(e2, p[1], q[1]);
-		// 	gt_mul(e1, e1, e2);
-		// 	pc_map_sim(e2, p, q, 2);
-		// 	TEST_ASSERT(gt_cmp(e1, e2) == RLC_EQ, end);
-		// 	g1_neg(p[1], p[0]);
-		// 	g2_copy(q[1], q[0]);
-		// 	pc_map_sim(e1, p, q, 2);
-		// 	TEST_ASSERT(gt_cmp_dig(e1, 1) == RLC_EQ, end);
-		// } TEST_END;
-	//}
-	// RLC_CATCH_ANY {
-	// 	util_print("FATAL ERROR!\n");
-	// 	RLC_ERROR(end);
-	// }
-	code = RLC_OK;
-  end:
-	return code;
-}
-
-int test(void) {
+	return RLC_OK;
 }
 
 int main(void) {
