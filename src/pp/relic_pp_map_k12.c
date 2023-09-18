@@ -199,10 +199,10 @@ static void pp_mil_lit_k12(
 		// r = r * r
 		fp12_sqr(r, r);
 
-		// initially
-		// - _q[0] = q[0]   // G1 point
-		// - t[0] = p[0]    // G2 point
-		// - l = 0          // Fp12 element
+		// initially:
+	 	// - l = 0          // Fp12 element
+		// - t[0] = p[0]    // G1 point (p)
+		// - _q[0] = q[0]   // G2 point (negated q)
 		for (j = 0; j < m; j++) {  // m = 1
 			printf("G1 point before dbl:\n");
 			g1_print(t[j]);
